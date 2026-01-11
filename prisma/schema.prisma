@@ -17,4 +17,75 @@ model User {
   email         String
   avatarUrl     String?
   createdAt     DateTime        @default(now())
+  Property      Property[]
+}
+
+model Property {
+  id          Int               @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  userId      String
+  user        User              @relation(fields: [userId], references: [id])
+  typeId      Int
+  type        PropertyType      @relation(fields: [typeId], references: [id])
+  statusId    Int
+  status      PropertyStatus    @relation(fields: [statusId], references: [id])
+  location    PropertyLocation?
+  feature     PropertyFeature?
+  images      PropertyImage[]
+  contact     Contact?
+}
+
+model Contact {
+  id         Int      @id @default(autoincrement())
+  name       String
+  phone      String
+  email      String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId Int      @unique
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId Int
+}
+
+model PropertyFeature {
+  id              Int      @id @default(autoincrement())
+  bedrooms        Int
+  bathrooms       Int
+  parkingSpots    Int
+  area            Int
+  hasSwimmingPool Boolean
+  hasGardenYard   Boolean
+  hasBalcony      Boolean
+  property        Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId      Int      @unique
+}
+
+model PropertyLocation {
+  id            Int      @id @default(autoincrement())
+  streetAddress String
+  city          String
+  state         String
+  zip           String
+  region        String
+  landmark      String
+  propertyId    Int      @unique
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model PropertyType {
+  id       Int        @id @default(autoincrement())
+  value    String
+  Property Property[]
+}
+
+model PropertyStatus {
+  id       Int        @id @default(autoincrement())
+  value    String
+  Property Property[]
 }
