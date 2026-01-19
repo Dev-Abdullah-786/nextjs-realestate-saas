@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.8.7",
+    "@hookform/resolvers": "^5.2.2",
     "@kinde-oss/kinde-auth-nextjs": "^2.11.0",
     "@nextui-org/react": "^2.6.11",
     "@prisma/client": "^6.19.1",
@@ -19,6 +20,8 @@
     "next": "16.1.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.71.1",
+    "react-toastify": "^11.0.5",
     "zod": "^4.3.5"
   },
   "devDependencies": {
