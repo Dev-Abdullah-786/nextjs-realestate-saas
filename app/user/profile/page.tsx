@@ -1,18 +1,25 @@
 
 
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { ReactNode } from "react";
-import SectionTitle from "./_components/sectionTitle";
-import { Avatar, Card } from "@nextui-org/react";
-
-import UploadAvatar from "./_components/UploadAvatar";
-import PageTitle from "@/app/components/pageTitle";
+import Link from "next/link";
+import prisma from "@/lib/prisma";
+import React, { ReactNode } from "react";
 import { getUserById } from "@/lib/actions/user";
+import PageTitle from "@/app/components/pageTitle";
+import SectionTitle from "./_components/sectionTitle";
+import UploadAvatar from "./_components/UploadAvatar";
+import { Avatar, Button, Card } from "@nextui-org/react";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const ProfilePage = async () => {
   const { getUser } = await getKindeServerSession();
   const user = await getUser();
   const dbUser = await getUserById(user ? user.id : "");
+
+  const userSubcription = await prisma.subscriptions.findFirst({
+    where: { userId: dbUser?.id },
+    include: { plan: true },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div>
@@ -32,6 +39,27 @@ const ProfilePage = async () => {
           <Attribute title="Registered On" value={dbUser?.createdAt.toLocaleDateString()} />
           <Attribute title="Properties Posted" value={1} />
         </div>
+      </Card>
+
+      <Card className="m-4 p-4  flex flex-col gap-5">
+        <SectionTitle title="Subscription Details" />
+        {userSubcription ? (
+          <div>
+            <Attribute title="Plan" value={userSubcription.plan.name} />
+            <Attribute title="Price" value={userSubcription.plan.price} />
+            <Attribute
+              title="Purchased On"
+              value={userSubcription.createdAt.toLocaleDateString()}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <p className="text-center">No Subscription Found!</p>
+          </div>
+        )}
+        <Link href={"/user/subscription"}>
+          <Button color="secondary">Purchase Your Subscription</Button>
+        </Link>
       </Card>
     </div>
   );
